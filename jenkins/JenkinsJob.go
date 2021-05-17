@@ -1,4 +1,4 @@
-package main
+package jenkins
 
 import (
 	"context"
@@ -9,9 +9,15 @@ import (
 func BuildJob(jobName string, gitPath string) error {
 	jobConfig := getConfig(gitPath)
 	ctx := context.Background()
-	_, jobErr := jenkins.CreateJob(ctx, jobConfig, jobName)
-	if jobErr != nil {
-		return jobErr
+	jb, jbErr := jenkins.GetJob(ctx, jobName)
+	if jbErr != nil {
+		return jbErr
+	}
+	if jb == nil {
+		_, jobErr := jenkins.CreateJob(ctx, jobConfig, jobName)
+		if jobErr != nil {
+			return jobErr
+		}
 	}
 	return nil
 }
@@ -50,7 +56,7 @@ var (
 	PIPELINE_VIEW  = "au.com.centrumsystems.hudson.plugin.buildpipeline.BuildPipelineView"
 )
 
-func init() () {
+func init() {
 	jenkins = gojenkins.CreateJenkins(nil, jenkins_url, jenkins_user, jenkins_pwd)
 	ctx := context.Background()
 	_, err := jenkins.Init(ctx)

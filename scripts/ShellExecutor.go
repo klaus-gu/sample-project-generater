@@ -1,4 +1,4 @@
-package main
+package scripts
 
 import (
 	"log"
@@ -15,7 +15,7 @@ func Execute(script_path string, args ...string) error {
 	var err error
 	var cmd *exec.Cmd
 	path, _ := GetCurrentPath()
-	cmd = exec.Command("sh", path+script_path, args[0], args[1])
+	cmd = exec.Command("sh", path+script_path, args[0], args[1], args[2], args[3])
 	_, err = cmd.Output()
 	if err != nil {
 		return err

@@ -1,4 +1,4 @@
-package main
+package gitlab
 
 import (
 	"github.com/xanzy/go-gitlab"
@@ -6,6 +6,16 @@ import (
 )
 
 func BuildProject(pjName string) (*gitlab.Project, error) {
+	var pj *gitlab.Project
+	pl := &gitlab.ListProjectsOptions{}
+	pList, _, err := git.Projects.ListProjects(pl)
+	if err == nil && len(pList) >= 0 {
+		for _, rpj := range pList {
+			if rpj.Name == pjName {
+				return rpj, nil
+			}
+		}
+	}
 	p := &gitlab.CreateProjectOptions{
 		Name:                 gitlab.String(pjName),
 		Description:          gitlab.String("Unified framework template"),
